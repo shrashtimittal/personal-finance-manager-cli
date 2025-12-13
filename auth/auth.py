@@ -24,18 +24,19 @@ def register_user(username: str, password: str) -> bool:
     finally:
         conn.close()
 
-def login_user(username: str, password: str) -> bool:
+def login_user(username: str, password: str):
     conn = get_connection()
     cursor = conn.cursor()
 
     hashed_pw = hash_password(password)
 
     cursor.execute(
-        "SELECT * FROM users WHERE username = ? AND password = ?",
+        "SELECT id FROM users WHERE username = ? AND password = ?",
         (username, hashed_pw)
     )
 
     user = cursor.fetchone()
     conn.close()
 
-    return user is not None
+    return user[0] if user else None
+
