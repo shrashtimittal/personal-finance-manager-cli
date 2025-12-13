@@ -1,0 +1,9 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Database files
+data/*.db
+
+# VS Code settings
+.vscode/
