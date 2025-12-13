@@ -1,6 +1,10 @@
 ﻿from database.db import initialize_database
 from auth.auth import register_user, login_user
-from transactions.transactions import add_transaction, get_transactions
+from transactions.transactions import (
+    add_transaction,
+    get_transactions,
+    get_monthly_report
+)
 
 
 def user_session(user_id):
@@ -9,7 +13,8 @@ def user_session(user_id):
         print("1. Add Income")
         print("2. Add Expense")
         print("3. View Transactions")
-        print("4. Logout")
+        print("4. Monthly Report")
+        print("5. Logout")
 
         choice = input("Choose an option: ")
 
@@ -31,17 +36,29 @@ def user_session(user_id):
             if not transactions:
                 print("No transactions found.")
             else:
-                print("\nType | Category | Amount | Date")
-                print("-" * 35)
-                for t in transactions:
-                    print(f"{t[0]:<6} | {t[1]:<8} | {t[2]:<6} | {t[3]}")
+                print("\nType     Category     Amount     Date")
+                print("-" * 40)
+                for txn in transactions:
+                    txn_type, category, amount, date = txn
+                    print(f"{txn_type:<8} {category:<12} {amount:<10} {date}")
 
         elif choice == "4":
+            year = int(input("Enter year (YYYY): "))
+            month = int(input("Enter month (1-12): "))
+
+            income, expense, savings = get_monthly_report(user_id, year, month)
+
+            print("\n--- Monthly Report ---")
+            print(f"Total Income : {income}")
+            print(f"Total Expense: {expense}")
+            print(f"Savings      : {savings}")
+
+        elif choice == "5":
             print("Logged out.")
             break
 
         else:
-            print("Invalid option.")
+            print("Invalid option. Please try again.")
 
 
 def main():
@@ -82,3 +99,4 @@ def main():
 if __name__ == "__main__":
     initialize_database()
     main()
+

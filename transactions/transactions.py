@@ -36,3 +36,36 @@ def get_transactions(user_id: int):
     rows = cursor.fetchall()
     conn.close()
     return rows
+
+def get_monthly_report(user_id: int, year: int, month: int):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    month_str = f"{year}-{month:02d}"
+
+    cursor.execute(
+        """
+        SELECT type, SUM(amount)
+        FROM transactions
+        WHERE user_id = ?
+          AND date LIKE ?
+        GROUP BY type
+        """,
+        (user_id, f"{month_str}%")
+    )
+
+    results = cursor.fetchall()
+    conn.close()
+
+    income = 0
+    expense = 0
+
+    for txn_type, total in results:
+        if txn_type == "income":
+            income = total or 0
+        elif txn_type == "expense":
+            expense = total or 0
+
+    savings = income - expense
+    return income, expense, savings
+
