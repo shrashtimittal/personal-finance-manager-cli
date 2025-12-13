@@ -18,3 +18,21 @@ def add_transaction(user_id: int, txn_type: str, category: str, amount: float):
 
     conn.commit()
     conn.close()
+
+def get_transactions(user_id: int):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT type, category, amount, date
+        FROM transactions
+        WHERE user_id = ?
+        ORDER BY date DESC
+        """,
+        (user_id,)
+    )
+
+    rows = cursor.fetchall()
+    conn.close()
+    return rows
