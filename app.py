@@ -14,7 +14,7 @@ from transactions.transactions import (
     get_income_expense_summary
 )
 from datetime import datetime
-from budgets.budgets import set_budget, get_budgets
+from budgets.budgets import set_budget, get_budgets, get_budget_status
 
 # ===============================
 # HELPER FUNCTIONS

@@ -42,3 +42,36 @@ def get_budgets(user_id: int, month: int, year: int):
     rows = cursor.fetchall()
     conn.close()
     return rows
+
+
+def get_budget_status(user_id: int, month: int, year: int):
+    """
+    Compare budgets with actual expenses and return status.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT b.category,
+               b.amount AS budget,
+               COALESCE(SUM(t.amount), 0) AS spent
+        FROM budgets b
+        LEFT JOIN transactions t
+          ON b.user_id = t.user_id
+         AND b.category = t.category
+         AND t.type = 'expense'
+         AND t.date LIKE ?
+        WHERE b.user_id = ?
+          AND b.month = ?
+          AND b.year = ?
+        GROUP BY b.category, b.amount
+        ORDER BY b.category
+        """,
+        (f"{year}-{month:02d}%", user_id, month, year)
+    )
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    return rows
