@@ -60,6 +60,25 @@ def get_transactions_by_category(user_id: int, category: str):
     conn.close()
     return rows
 
+def get_transactions_by_date_range(user_id: int, start_date: str, end_date: str):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT id, type, category, amount, date
+        FROM transactions
+        WHERE user_id = ?
+          AND date BETWEEN ? AND ?
+        ORDER BY date DESC
+        """,
+        (user_id, start_date, end_date)
+    )
+
+    rows = cursor.fetchall()
+    conn.close()
+    return rows
+
 def update_transaction(txn_id: int, user_id: int, category: str, amount: float):
     """
     Update category and amount of a transaction.
