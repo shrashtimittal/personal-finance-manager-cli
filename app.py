@@ -7,7 +7,9 @@ from transactions.transactions import (
     get_transactions_by_date_range,
     update_transaction,
     delete_transaction,
-    get_monthly_report
+    get_monthly_report,
+    get_yearly_report,
+    get_yearly_monthly_breakdown   # ✅ DAY 12
 )
 from datetime import datetime
 
@@ -59,7 +61,9 @@ def user_session(user_id):
         print("6. Update Transaction")
         print("7. Delete Transaction")
         print("8. Monthly Report")
-        print("9. Logout")
+        print("9. Yearly Report")
+        print("10. Yearly Monthly Breakdown")   # ✅ DAY 12
+        print("11. Logout")
 
         choice = input("Choose an option: ")
 
@@ -109,7 +113,7 @@ def user_session(user_id):
             else:
                 show_transactions(transactions)
 
-        # View Transactions by Date Range (Day 10 polish)
+        # View Transactions by Date Range
         elif choice == "5":
             start_date = input("Enter start date (YYYY-MM-DD): ").strip()
             end_date = input("Enter end date (YYYY-MM-DD): ").strip()
@@ -127,7 +131,7 @@ def user_session(user_id):
             else:
                 show_transactions(transactions)
 
-        # Update Transaction (Day 10 feedback)
+        # Update Transaction
         elif choice == "6":
             transactions = get_transactions(user_id)
             if not transactions:
@@ -155,7 +159,7 @@ def user_session(user_id):
             else:
                 print("Transaction not found.")
 
-        # Delete Transaction (Day 10 feedback)
+        # Delete Transaction
         elif choice == "7":
             transactions = get_transactions(user_id)
             if not transactions:
@@ -190,12 +194,52 @@ def user_session(user_id):
             income, expense, savings = get_monthly_report(user_id, year, month)
 
             print("\n--- Monthly Report ---")
+            print(f"Year-Month   : {year}-{month:02d}")
             print(f"Total Income : {income}")
             print(f"Total Expense: {expense}")
             print(f"Savings      : {savings}")
 
-        # Logout
+        # Yearly Report
         elif choice == "9":
+            try:
+                year = int(input("Enter year (YYYY): "))
+            except ValueError:
+                print("Invalid year.")
+                continue
+
+            income, expense, savings = get_yearly_report(user_id, year)
+
+            print("\n--- Yearly Report ---")
+            print(f"Year         : {year}")
+            print(f"Total Income : {income}")
+            print(f"Total Expense: {expense}")
+            print(f"Savings      : {savings}")
+
+        # Yearly Monthly Breakdown ✅ DAY 12
+        elif choice == "10":
+            try:
+                year = int(input("Enter year (YYYY): "))
+            except ValueError:
+                print("Invalid year.")
+                continue
+
+            breakdown = get_yearly_monthly_breakdown(user_id, year)
+
+            if not breakdown:
+                print("No data found for this year.")
+                continue
+
+            print(f"\n--- Monthly Breakdown for {year} ---")
+            for month, data in breakdown.items():
+                print(
+                    f"{month} → "
+                    f"Income: {data['income']} | "
+                    f"Expense: {data['expense']} | "
+                    f"Savings: {data['savings']}"
+                )
+
+        # Logout
+        elif choice == "11":
             print("Logged out.")
             break
 

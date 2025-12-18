@@ -21,10 +21,6 @@ def add_transaction(user_id: int, txn_type: str, category: str, amount: float):
 
 
 def get_transactions(user_id: int):
-    """
-    Fetch all transactions for a user.
-    Includes transaction ID (required for update/delete).
-    """
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -83,10 +79,6 @@ def get_transactions_by_date_range(user_id: int, start_date: str, end_date: str)
 
 
 def update_transaction(txn_id: int, user_id: int, category: str, amount: float):
-    """
-    Update category and amount of a transaction.
-    Returns True if updated, False if not found.
-    """
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -102,15 +94,10 @@ def update_transaction(txn_id: int, user_id: int, category: str, amount: float):
     affected = cursor.rowcount
     conn.commit()
     conn.close()
-
     return affected > 0
 
 
 def delete_transaction(txn_id: int, user_id: int):
-    """
-    Delete a transaction safely.
-    Returns True if deleted, False if not found.
-    """
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -125,14 +112,10 @@ def delete_transaction(txn_id: int, user_id: int):
     affected = cursor.rowcount
     conn.commit()
     conn.close()
-
     return affected > 0
 
 
 def get_monthly_report(user_id: int, year: int, month: int):
-    """
-    Monthly income, expense and savings calculation.
-    """
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -163,3 +146,75 @@ def get_monthly_report(user_id: int, year: int, month: int):
 
     savings = income - expense
     return income, expense, savings
+
+
+def get_yearly_report(user_id: int, year: int):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT type, SUM(amount)
+        FROM transactions
+        WHERE user_id = ?
+          AND date LIKE ?
+        GROUP BY type
+        """,
+        (user_id, f"{year}%")
+    )
+
+    results = cursor.fetchall()
+    conn.close()
+
+    income = 0
+    expense = 0
+
+    for txn_type, total in results:
+        if txn_type == "income":
+            income = total or 0
+        elif txn_type == "expense":
+            expense = total or 0
+
+    savings = income - expense
+    return income, expense, savings
+
+
+def get_yearly_monthly_breakdown(user_id: int, year: int):
+    """
+    Returns month-wise income, expense, and savings for a year.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT substr(date, 1, 7) AS month, type, SUM(amount)
+        FROM transactions
+        WHERE user_id = ?
+          AND date LIKE ?
+        GROUP BY month, type
+        ORDER BY month
+        """,
+        (user_id, f"{year}%")
+    )
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    breakdown = {}
+
+    for month, txn_type, total in rows:
+        if month not in breakdown:
+            breakdown[month] = {"income": 0, "expense": 0}
+
+        if txn_type == "income":
+            breakdown[month]["income"] = total or 0
+        elif txn_type == "expense":
+            breakdown[month]["expense"] = total or 0
+
+    for month in breakdown:
+        breakdown[month]["savings"] = (
+            breakdown[month]["income"] - breakdown[month]["expense"]
+        )
+
+    return breakdown
