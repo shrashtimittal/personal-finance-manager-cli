@@ -19,13 +19,18 @@ def add_transaction(user_id: int, txn_type: str, category: str, amount: float):
     conn.commit()
     conn.close()
 
+
 def get_transactions(user_id: int):
+    """
+    Fetch all transactions for a user.
+    Includes transaction ID (required for update/delete).
+    """
     conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute(
         """
-        SELECT type, category, amount, date
+        SELECT id, type, category, amount, date
         FROM transactions
         WHERE user_id = ?
         ORDER BY date DESC
@@ -37,7 +42,70 @@ def get_transactions(user_id: int):
     conn.close()
     return rows
 
+def get_transactions_by_category(user_id: int, category: str):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT id, type, category, amount, date
+        FROM transactions
+        WHERE user_id = ? AND category = ?
+        ORDER BY date DESC
+        """,
+        (user_id, category)
+    )
+
+    rows = cursor.fetchall()
+    conn.close()
+    return rows
+
+def update_transaction(txn_id: int, user_id: int, category: str, amount: float):
+    """
+    Update category and amount of a transaction.
+    Ensures only the owner can update it.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        UPDATE transactions
+        SET category = ?, amount = ?
+        WHERE id = ? AND user_id = ?
+        """,
+        (category, amount, txn_id, user_id)
+    )
+
+    conn.commit()
+    conn.close()
+
+
+def delete_transaction(txn_id: int, user_id: int):
+    """
+    Delete a transaction safely.
+    Ensures only the owner can delete it.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        DELETE FROM transactions
+        WHERE id = ? AND user_id = ?
+        """,
+        (txn_id, user_id)
+    )
+
+    conn.commit()
+    conn.close()
+
+
 def get_monthly_report(user_id: int, year: int, month: int):
+    """
+    Monthly income, expense and savings calculation.
+    (Already implemented earlier – unchanged)
+    """
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -68,4 +136,5 @@ def get_monthly_report(user_id: int, year: int, month: int):
 
     savings = income - expense
     return income, expense, savings
+
 
