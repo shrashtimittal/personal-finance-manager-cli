@@ -9,7 +9,8 @@ from transactions.transactions import (
     delete_transaction,
     get_monthly_report,
     get_yearly_report,
-    get_yearly_monthly_breakdown   # ✅ DAY 12
+    get_yearly_monthly_breakdown,
+    get_category_summary   
 )
 from datetime import datetime
 
@@ -62,8 +63,9 @@ def user_session(user_id):
         print("7. Delete Transaction")
         print("8. Monthly Report")
         print("9. Yearly Report")
-        print("10. Yearly Monthly Breakdown")   # ✅ DAY 12
-        print("11. Logout")
+        print("10. Yearly Monthly Breakdown")
+        print("11. Category-wise Summary")   
+        print("12. Logout")
 
         choice = input("Choose an option: ")
 
@@ -215,7 +217,6 @@ def user_session(user_id):
             print(f"Total Expense: {expense}")
             print(f"Savings      : {savings}")
 
-        # Yearly Monthly Breakdown ✅ DAY 12
         elif choice == "10":
             try:
                 year = int(input("Enter year (YYYY): "))
@@ -238,8 +239,22 @@ def user_session(user_id):
                     f"Savings: {data['savings']}"
                 )
 
-        # Logout
         elif choice == "11":
+            summary = get_category_summary(user_id)
+
+            if not summary:
+                print("No transactions found.")
+                continue
+
+            print("\n--- Category-wise Summary ---")
+            for category, data in summary.items():
+                if data["income"] > 0:
+                    print(f"{category} → Income : {data['income']}")
+                if data["expense"] > 0:
+                    print(f"{category} → Expense: {data['expense']}")
+
+        # Logout
+        elif choice == "12":
             print("Logged out.")
             break
 

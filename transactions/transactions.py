@@ -218,3 +218,37 @@ def get_yearly_monthly_breakdown(user_id: int, year: int):
         )
 
     return breakdown
+
+def get_category_summary(user_id: int):
+    """
+    Returns category-wise income and expense totals.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT category, type, SUM(amount)
+        FROM transactions
+        WHERE user_id = ?
+        GROUP BY category, type
+        ORDER BY category
+        """,
+        (user_id,)
+    )
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    summary = {}
+
+    for category, txn_type, total in rows:
+        if category not in summary:
+            summary[category] = {"income": 0, "expense": 0}
+
+        if txn_type == "income":
+            summary[category]["income"] = total or 0
+        elif txn_type == "expense":
+            summary[category]["expense"] = total or 0
+
+    return summary
