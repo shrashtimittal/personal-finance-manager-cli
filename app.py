@@ -14,7 +14,7 @@ from transactions.transactions import (
     get_income_expense_summary
 )
 from datetime import datetime
-
+from budgets.budgets import set_budget, get_budgets
 
 # ===============================
 # HELPER FUNCTIONS
@@ -78,7 +78,9 @@ def user_session(user_id):
         print("10. Yearly Monthly Breakdown")
         print("11. Category-wise Summary")
         print("12. Income vs Expense Summary")
-        print("13. Logout")
+        print("13. Set Monthly Budget")
+        print("14. View Monthly Budgets")
+        print("15. Logout")
 
         choice = input("Choose an option: ")
 
@@ -272,8 +274,49 @@ def user_session(user_id):
                 else:
                     print("Status       : Neutral (Balanced)")
 
-        # Logout
         elif choice == "13":
+            category = get_valid_category()
+            if not category:
+                continue
+
+            try:
+                month = int(input("Month (1-12): "))
+                year = int(input("Year (YYYY): "))
+                if month not in range(1, 13):
+                    raise ValueError
+            except ValueError:
+                print("Invalid month or year.")
+                continue
+
+            amount = get_valid_amount()
+            if amount is None:
+                continue
+
+            set_budget(user_id, category, month, year, amount)
+            print("Budget set successfully!")
+
+        elif choice == "14":
+            try:
+                month = int(input("Month (1-12): "))
+                year = int(input("Year (YYYY): "))
+                if month not in range(1, 13):
+                    raise ValueError
+            except ValueError:
+                print("Invalid month or year.")
+                continue
+
+            budgets = get_budgets(user_id, month, year)
+
+            if not budgets:
+                print("No budgets found for this period.")
+                continue
+
+            print(f"\n--- Budgets for {year}-{month:02d} ---")
+            for category, amount in budgets:
+                print(f"{category:<15} Budget: {amount}")
+
+        # Logout
+        elif choice == "15":
             print("Logged out.")
             break
 

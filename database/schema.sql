@@ -1,11 +1,15 @@
--- Users table
+-- ===============================
+-- USERS TABLE
+-- ===============================
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL
 );
 
--- Transactions table (income & expenses)
+-- ===============================
+-- TRANSACTIONS TABLE
+-- ===============================
 CREATE TABLE IF NOT EXISTS transactions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
@@ -16,11 +20,16 @@ CREATE TABLE IF NOT EXISTS transactions (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
--- Budgets table
+-- ===============================
+-- BUDGETS TABLE (DAY 16)
+-- ===============================
 CREATE TABLE IF NOT EXISTS budgets (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
     category TEXT NOT NULL,
-    monthly_limit REAL NOT NULL,
+    month INTEGER NOT NULL,
+    year INTEGER NOT NULL,
+    amount REAL NOT NULL,
+    UNIQUE(user_id, category, month, year),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
