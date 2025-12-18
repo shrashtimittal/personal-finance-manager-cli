@@ -42,6 +42,7 @@ def get_transactions(user_id: int):
     conn.close()
     return rows
 
+
 def get_transactions_by_category(user_id: int, category: str):
     conn = get_connection()
     cursor = conn.cursor()
@@ -59,6 +60,7 @@ def get_transactions_by_category(user_id: int, category: str):
     rows = cursor.fetchall()
     conn.close()
     return rows
+
 
 def get_transactions_by_date_range(user_id: int, start_date: str, end_date: str):
     conn = get_connection()
@@ -79,10 +81,11 @@ def get_transactions_by_date_range(user_id: int, start_date: str, end_date: str)
     conn.close()
     return rows
 
+
 def update_transaction(txn_id: int, user_id: int, category: str, amount: float):
     """
     Update category and amount of a transaction.
-    Ensures only the owner can update it.
+    Returns True if updated, False if not found.
     """
     conn = get_connection()
     cursor = conn.cursor()
@@ -96,14 +99,17 @@ def update_transaction(txn_id: int, user_id: int, category: str, amount: float):
         (category, amount, txn_id, user_id)
     )
 
+    affected = cursor.rowcount
     conn.commit()
     conn.close()
+
+    return affected > 0
 
 
 def delete_transaction(txn_id: int, user_id: int):
     """
     Delete a transaction safely.
-    Ensures only the owner can delete it.
+    Returns True if deleted, False if not found.
     """
     conn = get_connection()
     cursor = conn.cursor()
@@ -116,14 +122,16 @@ def delete_transaction(txn_id: int, user_id: int):
         (txn_id, user_id)
     )
 
+    affected = cursor.rowcount
     conn.commit()
     conn.close()
+
+    return affected > 0
 
 
 def get_monthly_report(user_id: int, year: int, month: int):
     """
     Monthly income, expense and savings calculation.
-    (Already implemented earlier – unchanged)
     """
     conn = get_connection()
     cursor = conn.cursor()
@@ -155,5 +163,3 @@ def get_monthly_report(user_id: int, year: int, month: int):
 
     savings = income - expense
     return income, expense, savings
-
-

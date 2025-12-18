@@ -9,6 +9,15 @@ from transactions.transactions import (
     delete_transaction,
     get_monthly_report
 )
+from datetime import datetime
+
+
+def is_valid_date(date_str):
+    try:
+        datetime.strptime(date_str, "%Y-%m-%d")
+        return True
+    except ValueError:
+        return False
 
 
 def get_valid_amount():
@@ -46,14 +55,15 @@ def user_session(user_id):
         print("2. Add Expense")
         print("3. View All Transactions")
         print("4. View Transactions by Category")
-        print("5. Update Transaction")
-        print("6. Delete Transaction")
-        print("7. Monthly Report")
-        print("8. Logout")
+        print("5. View Transactions by Date Range")
+        print("6. Update Transaction")
+        print("7. Delete Transaction")
+        print("8. Monthly Report")
+        print("9. Logout")
 
         choice = input("Choose an option: ")
 
-        # 1️⃣ Add Income
+        # Add Income
         if choice == "1":
             category = get_valid_category()
             if not category:
@@ -66,7 +76,7 @@ def user_session(user_id):
             add_transaction(user_id, "income", category, amount)
             print("Income added successfully!")
 
-        # 2️⃣ Add Expense
+        # Add Expense
         elif choice == "2":
             category = get_valid_category()
             if not category:
@@ -79,7 +89,7 @@ def user_session(user_id):
             add_transaction(user_id, "expense", category, amount)
             print("Expense added successfully!")
 
-        # 3️⃣ View All Transactions
+        # View All Transactions
         elif choice == "3":
             transactions = get_transactions(user_id)
             if not transactions:
@@ -87,7 +97,7 @@ def user_session(user_id):
             else:
                 show_transactions(transactions)
 
-        # 4️⃣ View Transactions by Category  ✅ DAY 8 FEATURE
+        # View Transactions by Category
         elif choice == "4":
             category = get_valid_category()
             if not category:
@@ -99,8 +109,26 @@ def user_session(user_id):
             else:
                 show_transactions(transactions)
 
-        # 5️⃣ Update Transaction
+        # View Transactions by Date Range (Day 10 polish)
         elif choice == "5":
+            start_date = input("Enter start date (YYYY-MM-DD): ").strip()
+            end_date = input("Enter end date (YYYY-MM-DD): ").strip()
+
+            if not is_valid_date(start_date) or not is_valid_date(end_date):
+                print("Invalid date format. Use YYYY-MM-DD.")
+                continue
+
+            transactions = get_transactions_by_date_range(
+                user_id, start_date, end_date
+            )
+
+            if not transactions:
+                print("No transactions found in this date range.")
+            else:
+                show_transactions(transactions)
+
+        # Update Transaction (Day 10 feedback)
+        elif choice == "6":
             transactions = get_transactions(user_id)
             if not transactions:
                 print("No transactions available to update.")
@@ -122,11 +150,13 @@ def user_session(user_id):
             if amount is None:
                 continue
 
-            update_transaction(txn_id, user_id, category, amount)
-            print("Transaction updated successfully!")
+            if update_transaction(txn_id, user_id, category, amount):
+                print("Transaction updated successfully!")
+            else:
+                print("Transaction not found.")
 
-        # 6️⃣ Delete Transaction
-        elif choice == "6":
+        # Delete Transaction (Day 10 feedback)
+        elif choice == "7":
             transactions = get_transactions(user_id)
             if not transactions:
                 print("No transactions available to delete.")
@@ -140,11 +170,13 @@ def user_session(user_id):
                 print("Invalid transaction ID.")
                 continue
 
-            delete_transaction(txn_id, user_id)
-            print("Transaction deleted successfully!")
+            if delete_transaction(txn_id, user_id):
+                print("Transaction deleted successfully!")
+            else:
+                print("Transaction not found.")
 
-        # 7️⃣ Monthly Report (already implemented earlier)
-        elif choice == "7":
+        # Monthly Report
+        elif choice == "8":
             try:
                 year = int(input("Enter year (YYYY): "))
                 month = int(input("Enter month (1-12): "))
@@ -162,8 +194,8 @@ def user_session(user_id):
             print(f"Total Expense: {expense}")
             print(f"Savings      : {savings}")
 
-        # 8️⃣ Logout
-        elif choice == "8":
+        # Logout
+        elif choice == "9":
             print("Logged out.")
             break
 
