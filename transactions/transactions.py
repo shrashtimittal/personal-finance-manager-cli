@@ -2,7 +2,14 @@ from database.db import get_connection
 from datetime import datetime
 
 
+# ===============================
+# TRANSACTION CREATION
+# ===============================
+
 def add_transaction(user_id: int, txn_type: str, category: str, amount: float):
+    """
+    Add a new income or expense transaction for a user.
+    """
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -20,7 +27,14 @@ def add_transaction(user_id: int, txn_type: str, category: str, amount: float):
     conn.close()
 
 
+# ===============================
+# TRANSACTION FETCHING
+# ===============================
+
 def get_transactions(user_id: int):
+    """
+    Fetch all transactions for a user.
+    """
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -40,6 +54,9 @@ def get_transactions(user_id: int):
 
 
 def get_transactions_by_category(user_id: int, category: str):
+    """
+    Fetch transactions filtered by category.
+    """
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -59,6 +76,9 @@ def get_transactions_by_category(user_id: int, category: str):
 
 
 def get_transactions_by_date_range(user_id: int, start_date: str, end_date: str):
+    """
+    Fetch transactions within a specific date range.
+    """
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -78,7 +98,15 @@ def get_transactions_by_date_range(user_id: int, start_date: str, end_date: str)
     return rows
 
 
+# ===============================
+# UPDATE & DELETE
+# ===============================
+
 def update_transaction(txn_id: int, user_id: int, category: str, amount: float):
+    """
+    Update category and amount of a transaction.
+    Returns True if updated, False if not found.
+    """
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -94,10 +122,15 @@ def update_transaction(txn_id: int, user_id: int, category: str, amount: float):
     affected = cursor.rowcount
     conn.commit()
     conn.close()
+
     return affected > 0
 
 
 def delete_transaction(txn_id: int, user_id: int):
+    """
+    Delete a transaction safely.
+    Returns True if deleted, False if not found.
+    """
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -112,10 +145,18 @@ def delete_transaction(txn_id: int, user_id: int):
     affected = cursor.rowcount
     conn.commit()
     conn.close()
+
     return affected > 0
 
 
+# ===============================
+# REPORTING FUNCTIONS
+# ===============================
+
 def get_monthly_report(user_id: int, year: int, month: int):
+    """
+    Returns total income, expense, and savings for a given month.
+    """
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -144,11 +185,13 @@ def get_monthly_report(user_id: int, year: int, month: int):
         elif txn_type == "expense":
             expense = total or 0
 
-    savings = income - expense
-    return income, expense, savings
+    return income, expense, income - expense
 
 
 def get_yearly_report(user_id: int, year: int):
+    """
+    Returns total income, expense, and savings for a year.
+    """
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -175,8 +218,7 @@ def get_yearly_report(user_id: int, year: int):
         elif txn_type == "expense":
             expense = total or 0
 
-    savings = income - expense
-    return income, expense, savings
+    return income, expense, income - expense
 
 
 def get_yearly_monthly_breakdown(user_id: int, year: int):
@@ -219,6 +261,7 @@ def get_yearly_monthly_breakdown(user_id: int, year: int):
 
     return breakdown
 
+
 def get_category_summary(user_id: int):
     """
     Returns category-wise income and expense totals.
@@ -252,3 +295,35 @@ def get_category_summary(user_id: int):
             summary[category]["expense"] = total or 0
 
     return summary
+
+
+def get_income_expense_summary(user_id: int):
+    """
+    Returns total income, total expense, and savings (all-time).
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT type, SUM(amount)
+        FROM transactions
+        WHERE user_id = ?
+        GROUP BY type
+        """,
+        (user_id,)
+    )
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    income = 0
+    expense = 0
+
+    for txn_type, total in rows:
+        if txn_type == "income":
+            income = total or 0
+        elif txn_type == "expense":
+            expense = total or 0
+
+    return income, expense, income - expense
