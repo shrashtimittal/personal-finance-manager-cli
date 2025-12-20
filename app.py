@@ -1,4 +1,4 @@
-﻿from database.db import initialize_database
+﻿from database.db import initialize_database, backup_database, restore_database
 from auth.auth import register_user, login_user
 from transactions.transactions import (
     add_transaction,
@@ -13,7 +13,6 @@ from transactions.transactions import (
     get_category_summary,
     get_income_expense_summary
 )
-from datetime import datetime
 from budgets.budgets import (
     set_budget,
     get_budgets,
@@ -21,6 +20,8 @@ from budgets.budgets import (
     delete_budget,
     get_budget_insights
 )
+from datetime import datetime
+import os
 
 # ===============================
 # HELPER FUNCTIONS
@@ -88,8 +89,10 @@ def user_session(user_id):
         print("14. View Monthly Budgets")
         print("15. Check Budget Status")
         print("16. Delete Monthly Budget")
-        print("17. Budget Insights & Recommendations")   
-        print("18. Logout")
+        print("17. Budget Insights & Recommendations")
+        print("18. Backup Database")
+        print("19. Restore Database")   
+        print("20. Logout")
 
         choice = input("Choose an option: ")
 
@@ -412,8 +415,33 @@ def user_session(user_id):
                     f"{item['suggestion']}"
                 )
 
-        # Logout
         elif choice == "18":
+            backup_database()
+
+        elif choice == "19":
+            backup_dir = os.path.join("data", "backups")
+
+            if not os.path.exists(backup_dir) or not os.listdir(backup_dir):
+                print("No backups available.")
+                continue
+
+            print("\nAvailable Backups:")
+            backups = os.listdir(backup_dir)
+            for i, file in enumerate(backups, start=1):
+                print(f"{i}. {file}")
+
+            try:
+                index = int(input("Select backup number: ")) - 1
+                if index not in range(len(backups)):
+                    raise ValueError
+            except ValueError:
+                print("Invalid selection.")
+                continue
+
+            restore_database(backups[index])
+
+        # Logout
+        elif choice == "20":
             print("Logged out.")
             break
 
@@ -426,48 +454,48 @@ def user_session(user_id):
 # ===============================
 
 def main():
-    print("\nPersonal Finance Manager")
-    print("1. Register")
-    print("2. Login")
-    print("3. Exit")
+    while True:
+        print("\nPersonal Finance Manager")
+        print("1. Register")
+        print("2. Login")
+        print("3. Exit")
 
-    choice = input("Choose an option: ")
+        choice = input("Choose an option: ").strip()
 
-    if choice == "1":
-        username = input("Username: ").strip()
-        password = input("Password: ").strip()
+        if choice == "1":
+            username = input("Username: ").strip()
+            password = input("Password: ").strip()
 
-        if not username or not password:
-            print("Username and password cannot be empty.")
-            return
+            if not username or not password:
+                print("Username and password cannot be empty.")
+                continue
 
-        if register_user(username, password):
-            print("User registered successfully!")
+            if register_user(username, password):
+                print("User registered successfully!")
+            else:
+                print("Username already exists.")
+
+        elif choice == "2":
+            username = input("Username: ").strip()
+            password = input("Password: ").strip()
+
+            if not username or not password:
+                print("Username and password cannot be empty.")
+                continue
+
+            user_id = login_user(username, password)
+            if user_id:
+                print("Login successful!")
+                user_session(user_id)   # returns here after logout
+            else:
+                print("Invalid credentials.")
+
+        elif choice == "3":
+            print("Goodbye!")
+            break
+
         else:
-            print("Username already exists.")
-
-    elif choice == "2":
-        username = input("Username: ").strip()
-        password = input("Password: ").strip()
-
-        if not username or not password:
-            print("Username and password cannot be empty.")
-            return
-
-        user_id = login_user(username, password)
-        if user_id:
-            print("Login successful!")
-            user_session(user_id)
-        else:
-            print("Invalid credentials.")
-
-    elif choice == "3":
-        print("Goodbye!")
-        exit()
-
-    else:
-        print("Invalid option.")
-
+            print("Invalid option. Please try again.")
 
 if __name__ == "__main__":
     initialize_database()
