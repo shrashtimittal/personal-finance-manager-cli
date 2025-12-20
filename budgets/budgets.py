@@ -117,3 +117,72 @@ def get_budget_status(user_id: int, month: int, year: int):
     conn.close()
 
     return rows
+
+def get_budget_insights(user_id: int, month: int, year: int):
+    """
+    Generate budget insights and recommendations.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    # Total expenses per category
+    cursor.execute(
+        """
+        SELECT category, SUM(amount) as spent
+        FROM transactions
+        WHERE user_id = ?
+          AND type = 'expense'
+          AND date LIKE ?
+        GROUP BY category
+        ORDER BY spent DESC
+        """,
+        (user_id, f"{year}-{month:02d}%")
+    )
+
+    expenses = cursor.fetchall()
+
+    # Budgets for the month
+    cursor.execute(
+        """
+        SELECT category, amount
+        FROM budgets
+        WHERE user_id = ?
+          AND month = ?
+          AND year = ?
+        """,
+        (user_id, month, year)
+    )
+
+    budgets = dict(cursor.fetchall())
+    conn.close()
+
+    insights = []
+
+    for category, spent in expenses:
+        budget = budgets.get(category)
+
+        if budget:
+            usage = spent / budget
+            if usage >= 1:
+                status = "Over Budget"
+                suggestion = "Reduce spending or increase budget"
+            elif usage >= 0.8:
+                status = "Near Limit"
+                suggestion = "Monitor spending closely"
+            else:
+                status = "Safe"
+                suggestion = "Spending under control"
+        else:
+            status = "No Budget"
+            suggestion = "Consider setting a budget"
+
+        insights.append({
+            "category": category,
+            "spent": spent,
+            "budget": budget,
+            "status": status,
+            "suggestion": suggestion
+        })
+
+    return insights
+

@@ -18,7 +18,8 @@ from budgets.budgets import (
     set_budget,
     get_budgets,
     get_budget_status,
-    delete_budget
+    delete_budget,
+    get_budget_insights
 )
 
 # ===============================
@@ -86,8 +87,9 @@ def user_session(user_id):
         print("13. Set Monthly Budget")
         print("14. View Monthly Budgets")
         print("15. Check Budget Status")
-        print("16. Delete Monthly Budget")   
-        print("17. Logout")
+        print("16. Delete Monthly Budget")
+        print("17. Budget Insights & Recommendations")   
+        print("18. Logout")
 
         choice = input("Choose an option: ")
 
@@ -380,8 +382,38 @@ def user_session(user_id):
             else:
                 print("Budget not found.")
 
-        # Logout
         elif choice == "17":
+            try:
+                month = int(input("Enter month (1-12): "))
+                year = int(input("Enter year (YYYY): "))
+                if month not in range(1, 13):
+                    raise ValueError
+            except ValueError:
+                print("Invalid month or year.")
+                continue
+
+            insights = get_budget_insights(user_id, month, year)
+
+            if not insights:
+                print("No expense data found for this period.")
+                continue
+
+            print(f"\n--- Budget Insights for {year}-{month:02d} ---")
+            print("Category        Spent     Budget     Status        Recommendation")
+            print("-" * 75)
+
+            for item in insights:
+                budget_display = item["budget"] if item["budget"] else "N/A"
+                print(
+                    f"{item['category']:<15} "
+                    f"{item['spent']:<9} "
+                    f"{budget_display:<10} "
+                    f"{item['status']:<13} "
+                    f"{item['suggestion']}"
+                )
+
+        # Logout
+        elif choice == "18":
             print("Logged out.")
             break
 
