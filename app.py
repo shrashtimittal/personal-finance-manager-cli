@@ -14,7 +14,12 @@ from transactions.transactions import (
     get_income_expense_summary
 )
 from datetime import datetime
-from budgets.budgets import set_budget, get_budgets, get_budget_status
+from budgets.budgets import (
+    set_budget,
+    get_budgets,
+    get_budget_status,
+    delete_budget
+)
 
 # ===============================
 # HELPER FUNCTIONS
@@ -80,7 +85,9 @@ def user_session(user_id):
         print("12. Income vs Expense Summary")
         print("13. Set Monthly Budget")
         print("14. View Monthly Budgets")
-        print("15. Logout")
+        print("15. Check Budget Status")
+        print("16. Delete Monthly Budget")   
+        print("17. Logout")
 
         choice = input("Choose an option: ")
 
@@ -315,8 +322,66 @@ def user_session(user_id):
             for category, amount in budgets:
                 print(f"{category:<15} Budget: {amount}")
 
-        # Logout
         elif choice == "15":
+            try:
+                month = int(input("Month (1-12): "))
+                year = int(input("Year (YYYY): "))
+                if month not in range(1, 13):
+                    raise ValueError
+            except ValueError:
+                print("Invalid month or year.")
+                continue
+
+            status = get_budget_status(user_id, month, year)
+
+            if not status:
+                print("No budgets found for this period.")
+                continue
+
+            print(f"\n--- Budget Status for {year}-{month:02d} ---")
+            print("Category        Budget     Spent      Status")
+            print("-" * 50)
+
+            for category, budget, spent in status:
+                if spent > budget:
+                    result = "OVER BUDGET"
+                else:
+                    result = "OK"
+
+                print(f"{category:<15} {budget:<10} {spent:<10} {result}")
+
+        elif choice == "16":
+            try:
+                month = int(input("Month (1-12): "))
+                year = int(input("Year (YYYY): "))
+                if month not in range(1, 13):
+                    raise ValueError
+            except ValueError:
+                print("Invalid month or year.")
+                continue
+
+            budgets = get_budgets(user_id, month, year)
+
+            if not budgets:
+                print("No budgets found for this period.")
+                continue
+
+            print(f"\n--- Budgets for {year}-{month:02d} ---")
+            for category, amount in budgets:
+                print(f"{category:<15} Budget: {amount}")
+
+            category = input("Enter category to delete: ").strip()
+            if not category:
+                print("Category cannot be empty.")
+                continue
+
+            if delete_budget(user_id, category, month, year):
+                print("Budget deleted successfully!")
+            else:
+                print("Budget not found.")
+
+        # Logout
+        elif choice == "17":
             print("Logged out.")
             break
 

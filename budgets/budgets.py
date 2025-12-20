@@ -1,6 +1,10 @@
 from database.db import get_connection
 
 
+# ===============================
+# CREATE / UPDATE BUDGET
+# ===============================
+
 def set_budget(user_id: int, category: str, month: int, year: int, amount: float):
     """
     Create or update a monthly budget for a category.
@@ -21,6 +25,10 @@ def set_budget(user_id: int, category: str, month: int, year: int, amount: float
     conn.commit()
     conn.close()
 
+
+# ===============================
+# READ BUDGETS
+# ===============================
 
 def get_budgets(user_id: int, month: int, year: int):
     """
@@ -43,6 +51,40 @@ def get_budgets(user_id: int, month: int, year: int):
     conn.close()
     return rows
 
+
+# ===============================
+# DELETE BUDGET (DAY 18)
+# ===============================
+
+def delete_budget(user_id: int, category: str, month: int, year: int):
+    """
+    Delete a specific monthly budget.
+    Returns True if deleted, False if not found.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        DELETE FROM budgets
+        WHERE user_id = ?
+          AND category = ?
+          AND month = ?
+          AND year = ?
+        """,
+        (user_id, category, month, year)
+    )
+
+    affected = cursor.rowcount
+    conn.commit()
+    conn.close()
+
+    return affected > 0
+
+
+# ===============================
+# BUDGET STATUS / ALERTS (DAY 17)
+# ===============================
 
 def get_budget_status(user_id: int, month: int, year: int):
     """
