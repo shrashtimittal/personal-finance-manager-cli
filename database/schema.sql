@@ -17,6 +17,10 @@ CREATE TABLE IF NOT EXISTS transactions (
     category TEXT NOT NULL,
     amount REAL NOT NULL,
     date TEXT NOT NULL,
+
+    -- Soft delete flag (0 = active, 1 = deleted)
+    deleted INTEGER DEFAULT 0,
+
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
@@ -30,6 +34,7 @@ CREATE TABLE IF NOT EXISTS budgets (
     month INTEGER NOT NULL,
     year INTEGER NOT NULL,
     amount REAL NOT NULL,
+
     UNIQUE(user_id, category, month, year),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );

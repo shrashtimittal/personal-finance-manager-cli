@@ -1,6 +1,7 @@
 from database.db import get_connection
 from datetime import datetime
-
+import csv
+import os
 
 # ===============================
 # TRANSACTION CREATION
@@ -327,3 +328,65 @@ def get_income_expense_summary(user_id: int):
             expense = total or 0
 
     return income, expense, income - expense
+
+
+def export_monthly_report_csv(user_id: int, year: int, month: int, income: float, expense: float, savings: float):
+    os.makedirs("exports", exist_ok=True)
+    filename = f"exports/monthly_report_{year}_{month:02d}.csv"
+
+    with open(filename, mode="w", newline="", encoding="utf-8") as file:
+        writer = csv.writer(file)
+        writer.writerow(["Metric", "Amount"])
+        writer.writerow(["Income", income])
+        writer.writerow(["Expense", expense])
+        writer.writerow(["Savings", savings])
+
+    return filename
+
+
+def export_yearly_report_csv(user_id: int, year: int, income: float, expense: float, savings: float):
+    os.makedirs("exports", exist_ok=True)
+    filename = f"exports/yearly_report_{year}.csv"
+
+    with open(filename, mode="w", newline="", encoding="utf-8") as file:
+        writer = csv.writer(file)
+        writer.writerow(["Metric", "Amount"])
+        writer.writerow(["Income", income])
+        writer.writerow(["Expense", expense])
+        writer.writerow(["Savings", savings])
+
+    return filename
+
+def export_category_summary_csv(user_id: int, summary: dict):
+
+    os.makedirs("exports", exist_ok=True)
+    filename = "exports/category_summary.csv"
+
+    with open(filename, mode="w", newline="", encoding="utf-8") as file:
+        writer = csv.writer(file)
+        writer.writerow(["Category", "Income", "Expense"])
+
+        for category, data in summary.items():
+            writer.writerow([
+                category,
+                data.get("income", 0),
+                data.get("expense", 0)
+            ])
+
+    return filename
+
+def export_all_transactions_csv(user_id: int, transactions: list):
+
+    os.makedirs("exports", exist_ok=True)
+    filename = "exports/all_transactions.csv"
+
+    with open(filename, mode="w", newline="", encoding="utf-8") as file:
+        writer = csv.writer(file)
+        writer.writerow(["Transaction ID", "Type", "Category", "Amount", "Date"])
+
+        for txn in transactions:
+            writer.writerow(txn)
+
+    return filename
+
+
