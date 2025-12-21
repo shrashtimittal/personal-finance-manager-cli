@@ -1,13 +1,19 @@
 from auth.auth import register_user, login_user
-from database.db import initialize_database
 
 def test_user_registration_and_login():
-    initialize_database()
+    username = "testuser"
+    password = "testpass"
 
-    username = "test_user"
-    password = "test_pass"
-
+    # Register
     assert register_user(username, password) is True
-    user_id = login_user(username, password)
 
+    # Duplicate registration should fail
+    assert register_user(username, password) is False
+
+    # Login should succeed
+    user_id = login_user(username, password)
     assert user_id is not None
+
+    # Wrong password should fail
+    assert login_user(username, "wrongpass") is None
+

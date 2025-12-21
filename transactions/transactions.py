@@ -128,16 +128,51 @@ def update_transaction(txn_id: int, user_id: int, category: str, amount: float):
 
 
 def delete_transaction(txn_id: int, user_id: int):
-    """
-    Delete a transaction safely.
-    Returns True if deleted, False if not found.
-    """
     conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute(
         """
-        DELETE FROM transactions
+        UPDATE transactions
+        SET deleted = 1
+        WHERE id = ? AND user_id = ?
+        """,
+        (txn_id, user_id)
+    )
+
+    affected = cursor.rowcount
+    conn.commit()
+    conn.close()
+
+    return affected > 0
+
+def get_deleted_transactions(user_id: int):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT id, type, category, amount, date
+        FROM transactions
+        WHERE user_id = ? AND deleted = 1
+        ORDER BY date DESC
+        """,
+        (user_id,)
+    )
+
+    rows = cursor.fetchall()
+    conn.close()
+    return rows
+
+
+def restore_transaction(txn_id: int, user_id: int):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        UPDATE transactions
+        SET deleted = 0
         WHERE id = ? AND user_id = ?
         """,
         (txn_id, user_id)

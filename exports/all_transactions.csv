@@ -1,0 +1,5 @@
+Transaction ID,Type,Category,Amount,Date
+1,income,Salary,50000.0,2025-12-21
+2,expense,Food,3000.0,2025-12-21
+3,expense,Rent,12000.0,2025-12-21
+4,expense,Travel,2000.0,2025-12-21

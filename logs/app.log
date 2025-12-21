@@ -1,0 +1,27 @@
+2025-12-21 15:43:56,131 | INFO | Application started
+2025-12-21 15:44:31,245 | INFO | User registered | testuser
+2025-12-21 15:45:05,053 | INFO | User logged in | user_id=1
+2025-12-21 15:45:05,053 | INFO | User session started (user_id=1)
+2025-12-21 15:45:23,061 | INFO | Income added | user_id=1, Salary, 50000.0
+2025-12-21 15:45:42,840 | INFO | Expense added | user_id=1, Food, 3000.0
+2025-12-21 15:45:56,781 | INFO | Expense added | user_id=1, Rent, 12000.0
+2025-12-21 15:46:06,497 | INFO | Expense added | user_id=1, Travel, 2000.0
+2025-12-21 15:46:24,683 | INFO | Transactions exported | user_id=1 | exports/all_transactions.csv
+2025-12-21 15:47:59,711 | WARNING | Transaction updated | user_id=1, txn_id=2
+2025-12-21 15:48:17,915 | WARNING | Transaction deleted | user_id=1, txn_id=4
+2025-12-21 15:58:22,188 | INFO | User logged out (user_id=1)
+2025-12-21 15:58:24,013 | INFO | Application exited
+2025-12-21 15:58:55,375 | INFO | Application started
+2025-12-21 15:59:22,835 | INFO | User registered | testuser
+2025-12-21 15:59:32,442 | INFO | User logged in | user_id=1
+2025-12-21 15:59:32,443 | INFO | User session started (user_id=1)
+2025-12-21 15:59:47,625 | INFO | Income added | user_id=1, Salary, 50000.0
+2025-12-21 15:59:59,622 | INFO | Expense added | user_id=1, Food, 3000.0
+2025-12-21 16:00:10,317 | INFO | Expense added | user_id=1, Rent, 12000.0
+2025-12-21 16:00:21,979 | INFO | Expense added | user_id=1, Travel, 2000.0
+2025-12-21 16:00:31,166 | INFO | Transactions exported | user_id=1 | exports/all_transactions.csv
+2025-12-21 16:01:18,083 | WARNING | Transaction updated | user_id=1, txn_id=2
+2025-12-21 16:01:46,952 | WARNING | Transaction deleted | user_id=1, txn_id=4
+2025-12-21 16:02:48,732 | WARNING | Database restored from finance_backup_2025-12-20_18-18-41.db
+2025-12-21 16:02:59,841 | INFO | User logged out (user_id=1)
+2025-12-21 16:03:02,688 | INFO | Application exited
