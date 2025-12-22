@@ -1,5 +1,9 @@
 # 💰 Personal Finance Management Application (CLI + GUI)
 
+![Core Implementation](https://img.shields.io/badge/Core-CLI-success)
+![Extension](https://img.shields.io/badge/GUI-Optional-blue)
+![Language](https://img.shields.io/badge/Python-3.9+-yellow)
+
 A Python-based personal finance management application designed to help users
 track income, expenses, budgets, and generate financial reports.
 
