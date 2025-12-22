@@ -1,0 +1,230 @@
+/* =========================================================
+   GLOBAL BASE
+   ========================================================= */
+
+* {
+    font-family: "Segoe UI";
+    color: #1C1F2A;
+}
+
+QWidget {
+    background-color: #F6F7FB;
+}
+
+/* =========================================================
+   MAIN WINDOW
+   ========================================================= */
+
+QMainWindow {
+    background-color: #F6F7FB;
+}
+
+/* =========================================================
+   CARDS / PANELS
+   ========================================================= */
+
+QFrame {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    border: 1px solid #E0E3EB;
+}
+
+/* =========================================================
+   LABELS
+   ========================================================= */
+
+QLabel {
+    font-size: 15px;
+}
+
+QLabel#PageTitle {
+    font-size: 26px;
+    font-weight: 600;
+}
+
+QLabel#SectionTitle {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+QLabel#SecondaryText {
+    color: #6B7280;
+    font-size: 12px;
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+QPushButton {
+    background-color: #2D3FE8;
+    color: #FFFFFF;
+    border-radius: 8px;
+    padding: 10px 20px;
+    min-height: 40px;
+    font-size: 15px;
+    font-weight: 500;
+    border: none;
+}
+
+QPushButton:hover {
+    background-color: #1E2A78;
+}
+
+QPushButton:pressed {
+    background-color: #1A2463;
+}
+
+QPushButton:disabled {
+    background-color: #9CA3AF;
+    color: #FFFFFF;
+}
+
+/* Secondary button */
+QPushButton#SecondaryButton {
+    background-color: #E8EBFF;
+    color: #2D3FE8;
+}
+
+QPushButton#SecondaryButton:hover {
+    background-color: #D0D6FF;
+}
+
+/* Danger button */
+QPushButton#DangerButton {
+    background-color: #E74C3C;
+}
+
+QPushButton#DangerButton:hover {
+    background-color: #C0392B;
+}
+
+/* =========================================================
+   INPUT FIELDS
+   ========================================================= */
+
+QLineEdit, QComboBox, QDateEdit {
+    background-color: #FFFFFF;
+    border: 1px solid #E0E3EB;
+    border-radius: 8px;
+    padding: 8px 12px;
+    min-height: 38px;
+    font-size: 15px;
+}
+
+QLineEdit:focus, QComboBox:focus, QDateEdit:focus {
+    border: 1px solid #2D3FE8;
+}
+
+/* =========================================================
+   TABLES
+   ========================================================= */
+
+QTableWidget {
+    background-color: #FFFFFF;
+    border: 1px solid #E0E3EB;
+    border-radius: 12px;
+    gridline-color: #E0E3EB;
+    font-size: 14px;
+}
+
+QHeaderView::section {
+    background-color: #E8EBFF;
+    padding: 10px;
+    border: none;
+    font-weight: 600;
+}
+
+QTableWidget::item {
+    padding: 8px;
+}
+
+QTableWidget::item:selected {
+    background-color: #DFF7F3;
+    color: #1C1F2A;
+}
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+QFrame#Sidebar {
+    background-color: #1E2A78;
+    border-radius: 0px;
+}
+
+QPushButton#SidebarButton {
+    background-color: transparent;
+    color: #FFFFFF;
+    text-align: left;
+    padding: 12px 18px;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+QPushButton#SidebarButton:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+QPushButton#SidebarButton:checked {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* =========================================================
+   PROGRESS BARS
+   ========================================================= */
+
+QProgressBar {
+    background-color: #E0E3EB;
+    border-radius: 6px;
+    height: 12px;
+    text-align: center;
+}
+
+QProgressBar::chunk {
+    background-color: #00B4A0;
+    border-radius: 6px;
+}
+
+/* =========================================================
+   SCROLLBARS
+   ========================================================= */
+
+QScrollBar:vertical {
+    width: 8px;
+    background: transparent;
+}
+
+QScrollBar::handle:vertical {
+    background: #9CA3AF;
+    border-radius: 4px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #6B7280;
+}
+
+/* =========================================================
+   DIALOGS
+   ========================================================= */
+
+QDialog {
+    background-color: #FFFFFF;
+    border-radius: 14px;
+}
+
+/* =========================================================
+   STATUS TEXT
+   ========================================================= */
+
+QLabel#SuccessText {
+    color: #2ECC71;
+}
+
+QLabel#DangerText {
+    color: #E74C3C;
+}
+
+QLabel#WarningText {
+    color: #F59E0B;
+}
