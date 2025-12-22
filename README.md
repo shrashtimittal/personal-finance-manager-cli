@@ -50,7 +50,7 @@ personal-finance-manager/
 ├── assets/              # Icons and UI assets
 ├── main.py              # CLI entry point
 └── README.md
-
+```
 ---
 
 ## 🖥️ CLI FEATURES (CORE IMPLEMENTATION)
@@ -125,7 +125,7 @@ Verify installation:
 ```bash
 python --version
 git --version
-
+```
 ---
 
 ## 📥 Step 1: Clone the Repository
@@ -133,14 +133,14 @@ git --version
 ```bash
 git clone https://github.com/shrashtimittal/personal-finance-manager-cli.git
 cd personal-finance-manager-cli
-
+```
 ## ▶️ Step 2: Run the CLI Application
 
 Start the command-line application using:
 
 ```bash
 python main.py
-
+```
 ---
 
 ## 🧭 Using the Application
@@ -167,11 +167,11 @@ Unit tests are written using **Pytest** to validate core functionality.
 Install Pytest (if not already installed):
 ```bash
 pip install pytest
-
+```
 Run the test 
 ```bash
 pytest
-
+```
 ---
 
 ## 🖥️ GUI EXTENSIONS (OPTIONAL)
@@ -234,13 +234,13 @@ Ensure the following are installed:
 Install PySide6 using pip:
 ```bash
 pip install PySide6
-
+```
 ## ▶️ Step 2: Run the GUI Application
 
 Launch the GUI using:
 ```bash
 python -m gui.main
-
+```
 ## 🧭 Using the GUI Application
 
 Once launched, the GUI allows you to:
