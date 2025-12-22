@@ -23,6 +23,32 @@ To develop a command-line application that allows users to:
 
 ---
 
+## 📁 Project Structure Overview
+
+```text
+personal-finance-manager/
+│
+├── auth/                # User registration & authentication (CLI)
+├── transactions/        # Income & expense handling + reports logic
+├── budgets/             # Budget management and alerts
+├── database/            # SQLite database connection & schema
+├── data/                # Backups and persistent data
+├── exports/             # CSV export utilities
+├── tests/               # Unit tests (Pytest)
+│
+├── gui/                 # Optional GUI (Desktop Application)
+│   ├── pages/           # GUI pages (Dashboard, Transactions, etc.)
+│   ├── widgets/         # Reusable UI components
+│   ├── dialogs/         # Modal dialogs
+│   ├── styles/          # Qt stylesheets (QSS)
+│   └── main.py          # GUI entry point
+│
+├── assets/              # Icons and UI assets
+├── main.py              # CLI entry point
+└── README.md
+
+---
+
 ## 🖥️ CLI FEATURES (CORE IMPLEMENTATION)
 
 ### 1️⃣ User Registration & Authentication
